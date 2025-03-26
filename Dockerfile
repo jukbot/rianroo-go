@@ -13,7 +13,7 @@ RUN go mod download
 COPY . .
 
 # Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -o main ./cmd/api/main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o main -ldflags="-w -s" ./cmd/api/main.go
 
 # Final stage
 FROM scratch
@@ -21,7 +21,7 @@ FROM scratch
 WORKDIR /app
 
 # Copy binary from builder stage
-COPY --from=builder /app/main .
+COPY --from=builder --link /app/main .
 
 # Expose port
 EXPOSE 8080
